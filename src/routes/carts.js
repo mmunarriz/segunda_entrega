@@ -118,4 +118,46 @@ router.delete("/:cid/products/:pid", async (req, res) => {
     }
 });
 
+// Actualizar la cantidad de ejemplares de un producto en el carrito
+router.put("/:cid/products/:pid", async (req, res) => {
+    try {
+        // Obtener el ID del producto y del carrito de los parámetros de la ruta
+        const productId = req.params.pid;
+        const carritoId = req.params.cid;
+
+        // Obtener la cantidad actualizada del producto desde req.body
+        const { quantity } = req.body;
+
+        // Verificar si la cantidad es un número positivo
+        if (typeof quantity !== 'number' || quantity < 0) {
+            return res.status(400).send({ message: "La cantidad debe ser un número positivo" });
+        }
+
+        // Obtener el carrito por su ID desde la base de datos
+        const carrito = await cartsManager.getCartById(carritoId);
+
+        if (!carrito) {
+            return res.status(404).send({ message: "Carrito no encontrado" });
+        }
+
+        // Buscar el producto en el carrito
+        const productInCart = carrito.products.find(prod => prod.product === productId);
+
+        if (!productInCart) {
+            return res.status(404).send({ message: "Producto no encontrado en el carrito" });
+        }
+
+        // Actualizar la cantidad del producto en el carrito
+        productInCart.quantity = quantity;
+
+        // Actualizar el carrito en la base de datos
+        await cartsManager.updateCart(carritoId, carrito);
+
+        res.status(200).send({ message: "Cantidad de ejemplares del producto actualizada exitosamente" });
+    } catch (error) {
+        res.status(400).send({ error: error.message });
+    }
+});
+
+
 export default router;
