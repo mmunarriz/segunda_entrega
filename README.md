@@ -122,6 +122,10 @@ POST http://localhost:8080/api/carts/64f63e0e204b88b11d732953/products/64fdb8a9c
                 "quantity": 2
             }
 
+Eliminar todos los productos de un carrito:
+
+DELETE http://localhost:8080/api/carts/64f63e0e204b88b11d732953
+
 ## Chat:
 
 GET http://localhost:8080/

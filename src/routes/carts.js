@@ -214,5 +214,30 @@ router.put("/:cid/products/:pid", async (req, res) => {
     }
 });
 
+// Eliminar todos los productos de un carrito
+router.delete("/:cid", async (req, res) => {
+    try {
+        // Obtener el ID del carrito de los parámetros de la ruta
+        const carritoId = req.params.cid;
+
+        // Obtener el carrito por su ID desde la base de datos
+        const carrito = await cartsManager.getCartById(carritoId);
+
+        if (!carrito) {
+            return res.status(404).send({ message: "Carrito no encontrado" });
+        }
+
+        // Vaciar el arreglo de productos en el carrito
+        carrito.products = [];
+
+        // Actualizar el carrito en la base de datos
+        await cartsManager.updateCart(carritoId, carrito);
+
+        res.status(200).send({ message: "Carrito vaciado exitosamente" });
+    } catch (error) {
+        res.status(400).send({ error: error.message });
+    }
+});
+
 
 export default router;
