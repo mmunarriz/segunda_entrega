@@ -27,7 +27,7 @@ router.get('/', async (req, res) => {
             hasNextPage: result.hasNextPage,
         };
 
-        // Agregar enlaces directos a la página previa 'precLink' y siguiente 'nextLink'
+        // Agregar enlaces directos a la página previa 'prevLink' y siguiente 'nextLink'
         if (result.hasPrevPage) {
             response.prevLink = `/api/products?page=${result.prevPage}&limit=${limit}&query=${query}&sort=${sort}`;
         }
