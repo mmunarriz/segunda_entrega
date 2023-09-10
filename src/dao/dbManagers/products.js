@@ -12,9 +12,9 @@ export default class Products {
             let productsQuery = productsModel.find(queryOptions);
 
             if (sort === 'asc') {
-                productsQuery = productsQuery.sort({ price: 1 });
+                productsQuery = productsQuery.sort({ price: 1 }); // Ordenar por precio ascendente
             } else if (sort === 'desc') {
-                productsQuery = productsQuery.sort({ price: -1 });
+                productsQuery = productsQuery.sort({ price: -1 }); // Ordenar por precio descendente
             }
 
             // Calcular información de paginación
