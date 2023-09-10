@@ -4,10 +4,57 @@ export default class Products {
     constructor() {
         // console.log(`Working products with Database persistence in mongodb`)
     }
-    getAll = async () => {
-        let products = await productsModel.find();
-        return products.map(product => product.toObject())
+
+    getAll = async (limit = 10, page = 1, query = '', sort = '') => {
+        try {
+            // Calcular el índice de inicio para paginación
+            const startIndex = (page - 1) * limit;
+
+            // Configurar opciones de búsqueda
+            let queryOptions = {};
+
+            if (query) {
+                queryOptions = {
+                    $or: [
+                        { title: { $regex: query, $options: 'i' } },
+                        { description: { $regex: query, $options: 'i' } },
+                        { category: { $regex: `^${query}$`, $options: 'i' } }, // Coincidir con la categoría exacta
+                    ],
+                };
+            }
+
+            let productsQuery = productsModel.find(queryOptions);
+
+            if (sort === 'asc') {
+                productsQuery = productsQuery.sort({ price: 1 }); // Ordenar por precio ascendente
+            } else if (sort === 'desc') {
+                productsQuery = productsQuery.sort({ price: -1 }); // Ordenar por precio descendente
+            }
+
+            // Ejecutar la consulta paginada
+            const products = await productsQuery.skip(startIndex).limit(limit).exec();
+
+            // Calcular información de paginación
+            const totalProducts = await productsModel.countDocuments(queryOptions);
+            const totalPages = Math.ceil(totalProducts / limit);
+            const hasNextPage = page < totalPages;
+            const hasPrevPage = page > 1;
+
+            return {
+                products,
+                totalPages,
+                prevPage: hasPrevPage ? page - 1 : null,
+                nextPage: hasNextPage ? page + 1 : null,
+                page,
+                hasPrevPage,
+                hasNextPage,
+            };
+        } catch (error) {
+            throw error;
+        }
     }
+
+
     getProductById = async (id) => {
         try {
             const product = await productsModel.findById(id);

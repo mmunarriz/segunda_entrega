@@ -4,24 +4,34 @@ import Products from '../dao/dbManagers/products.js';
 const productsManager = new Products();
 const router = Router();
 
-// Listar productos
+// Listar productos con "query params" en la URL
 router.get('/', async (req, res) => {
     try {
-        let products = await productsManager.getAll();
+        // Obtener y validar los "query params" de la URL
+        const limit = req.query.limit ? parseInt(req.query.limit) : 10;
+        const page = req.query.page ? parseInt(req.query.page) : 1;
+        const query = req.query.query || '';
+        const sort = req.query.sort || '';
 
-        // Lee el valor del parámetro "limit" (si existe)
-        const limit = req.query.limit;
+        // Llamar al método getAll de la clase Products con los "query params"
+        const result = await productsManager.getAll(limit, page, query, sort);
 
-        // Si se recibió el parámetro "limit", devuelve el número de productos solicitados
-        if (limit) {
-            products = products.slice(0, parseInt(limit));
-        }
-
-        res.send({ status: "success", payload: products });
+        res.send({
+            status: "success",
+            payload: result.products,
+            totalPages: result.totalPages,
+            prevPage: result.prevPage,
+            nextPage: result.nextPage,
+            page: result.page,
+            hasPrevPage: result.hasPrevPage,
+            hasNextPage: result.hasNextPage,
+        });
     } catch (error) {
         res.status(500).send({ status: "error", error: "No se pudieron obtener productos debido a un error interno" });
     }
 });
+
+
 
 // Listar un producto específico por ID
 router.get('/:pid', async (req, res) => {

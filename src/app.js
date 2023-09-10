@@ -10,7 +10,10 @@ import Message from './dao/models/message.js';
 
 const app = express();
 const PORT = 8080;
-const connection = mongoose.connect('mongodb+srv://mmunarriz:C0d3r@cluster0.hymhndd.mongodb.net/ecommerce')
+const connection = mongoose.connect('mongodb+srv://mmunarriz:C0d3r@cluster0.hymhndd.mongodb.net/ecommerce', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
 
 // Template engine
 app.engine('handlebars', handlebars.engine());

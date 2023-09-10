@@ -1,6 +1,6 @@
-# Desafío complementario, práctica de integración:
+# Segunda pre entrega:
 
-Se desarrollará un servidor que contenga los endpoints y servicios necesarios para gestionar los productos y carritos de compra en el e-commerce. Con agregado del modelo de persistencia de Mongo y mongoose.
+Profesionalizando la BD
 
 ## Instrucciones:
 
@@ -17,6 +17,14 @@ GET http://localhost:8080/api/products
 Listar productos (con limit):
 
 GET http://localhost:8080/api/products?limit=3
+
+Listar productos (con limit, page, query):
+
+GET http://localhost:8080/api/products?limit=10&page=1&query=cat1
+
+Listar productos (con sort 'asc' o 'desc' por precio):
+
+GET http://localhost:8080/api/products?limit=10&page=1&query=cat1&sort=desc
 
 Listar un producto específico:
 
