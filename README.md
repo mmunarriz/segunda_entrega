@@ -91,9 +91,31 @@ Eliminar producto de un carrito:
 
 DELETE http://localhost:8080/api/carts/64f63e0e204b88b11d732953/products/64f516447f20b224b63c83d5
 
+Actualizar todo el carrito con un nuevo arreglo de productos:
+
+POST http://localhost:8080/api/carts/64f63e0e204b88b11d732953
+
+        Body ejemplo:
+            {
+                    "products": [
+                    {
+                        "product": "64fdb8a9c69513ebcf9abf2d",
+                        "quantity": 3
+                    },
+                    {
+                        "product": "64f5165d7f20b224b63c83da",
+                        "quantity": 2
+                    },
+                    {
+                        "product": "64f5170c7f20b224b63c83e4",
+                        "quantity": 7
+                    }
+                ]
+            }
+
 Actualizar la cantidad de ejemplares de un producto en un carrito:
 
-POST http://localhost:8080/api/carts/64f63e0e204b88b11d732953/products/64f516447f20b224b63c83d5
+POST http://localhost:8080/api/carts/64f63e0e204b88b11d732953/products/64fdb8a9c69513ebcf9abf2d
 
         Body ejemplo:
             {

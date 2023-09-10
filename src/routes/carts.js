@@ -118,6 +118,61 @@ router.delete("/:cid/products/:pid", async (req, res) => {
     }
 });
 
+// Validar si los productos existen en la base de datos
+const validateProducts = async (products) => {
+    const invalidProducts = [];
+
+    for (const product of products) {
+        const existingProduct = await productsManager.getProductById(product.product);
+        if (!existingProduct) {
+            invalidProducts.push(product.product);
+        }
+    }
+
+    return invalidProducts;
+};
+
+// Actualizar todo el carrito con un nuevo arreglo de productos
+router.put("/:cid", async (req, res) => {
+    try {
+        // Obtener el ID del carrito de los parametros de la ruta
+        const carritoId = req.params.cid;
+
+        // Obtener el nuevo arreglo de productos desde req.body
+        const { products } = req.body;
+
+        // Verificar si products es un arreglo valido
+        if (!Array.isArray(products)) {
+            return res.status(400).send({ message: "El cuerpo de la solicitud debe contener un arreglo de productos" });
+        }
+
+        // Validar si los productos recibidos son validos
+        const invalidProducts = await validateProducts(products);
+
+        if (invalidProducts.length > 0) {
+            return res.status(404).send({ message: "Algunos productos no existen en la base de datos", invalidProducts });
+        }
+
+        // Obtener el carrito por su ID desde la base de datos
+        const carrito = await cartsManager.getCartById(carritoId);
+
+        if (!carrito) {
+            return res.status(404).send({ message: "Carrito no encontrado" });
+        }
+
+        // Reemplazar el arreglo de productos en el carrito con el nuevo arreglo
+        carrito.products = products;
+
+        // Actualizar el carrito en la base de datos
+        await cartsManager.updateCart(carritoId, carrito);
+
+        res.status(200).send({ message: "Carrito actualizado exitosamente" });
+    } catch (error) {
+        res.status(400).send({ error: error.message });
+    }
+});
+
+
 // Actualizar la cantidad de ejemplares de un producto en el carrito
 router.put("/:cid/products/:pid", async (req, res) => {
     try {
