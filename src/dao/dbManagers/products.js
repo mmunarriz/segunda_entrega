@@ -5,36 +5,20 @@ export default class Products {
         // console.log(`Working products with Database persistence in mongodb`)
     }
 
-    getAll = async (limit = 10, page = 1, query = '', sort = '') => {
+    getAll = async (limit = 10, page = 1, queryOptions = {}, sort = '') => {
         try {
             // Calcular el índice de inicio para paginación
             const startIndex = (page - 1) * limit;
-
-            // Configurar opciones de búsqueda
-            let queryOptions = {};
-
-            if (query) {
-                queryOptions = {
-                    $or: [
-                        { title: { $regex: query, $options: 'i' } },
-                        { description: { $regex: query, $options: 'i' } },
-                        { category: { $regex: `^${query}$`, $options: 'i' } }, // Coincidir con la categoría exacta
-                    ],
-                };
-            }
-
             let productsQuery = productsModel.find(queryOptions);
 
             if (sort === 'asc') {
-                productsQuery = productsQuery.sort({ price: 1 }); // Ordenar por precio ascendente
+                productsQuery = productsQuery.sort({ price: 1 });
             } else if (sort === 'desc') {
-                productsQuery = productsQuery.sort({ price: -1 }); // Ordenar por precio descendente
+                productsQuery = productsQuery.sort({ price: -1 });
             }
 
-            // Ejecutar la consulta paginada
-            const products = await productsQuery.skip(startIndex).limit(limit).exec();
-
             // Calcular información de paginación
+            const products = await productsQuery.skip(startIndex).limit(limit).exec();
             const totalProducts = await productsModel.countDocuments(queryOptions);
             const totalPages = Math.ceil(totalProducts / limit);
             const hasNextPage = page < totalPages;
@@ -53,7 +37,6 @@ export default class Products {
             throw error;
         }
     }
-
 
     getProductById = async (id) => {
         try {

@@ -26,6 +26,10 @@ Listar productos (con sort 'asc' o 'desc' por precio):
 
 GET http://localhost:8080/api/products?limit=10&page=1&query=cat1&sort=desc
 
+Listar productos disponibles (con query=available):
+
+http://localhost:8080/api/products?limit=10&query=available&sort=desc
+
 Listar un producto específico:
 
 GET http://localhost:8080/api/products/64f516447f20b224b63c83d5

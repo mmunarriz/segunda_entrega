@@ -12,9 +12,21 @@ router.get('/', async (req, res) => {
         const page = req.query.page ? parseInt(req.query.page) : 1;
         const query = req.query.query || '';
         const sort = req.query.sort || '';
+        const queryOptions = {};
+
+        // Verificar si se busca por disponibilidad (stock mayor que 0)
+        if (query.toLowerCase() === 'available') {
+            queryOptions.stock = { $gt: 0 };
+        } else {
+            queryOptions.$or = [
+                { title: { $regex: query, $options: 'i' } },
+                { description: { $regex: query, $options: 'i' } },
+                { category: { $regex: `^${query}$`, $options: 'i' } }, // Coincidir con la categoría exacta
+            ];
+        }
 
         // Llamar al método getAll de la clase Products con los "query params"
-        const result = await productsManager.getAll(limit, page, query, sort);
+        const result = await productsManager.getAll(limit, page, queryOptions, sort);
 
         const response = {
             status: "success",
@@ -40,8 +52,6 @@ router.get('/', async (req, res) => {
         res.status(500).send({ status: "error", error: "No se pudieron obtener productos debido a un error interno" });
     }
 });
-
-
 
 // Listar un producto específico por ID
 router.get('/:pid', async (req, res) => {
