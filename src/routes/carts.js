@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import Carts from '../dao/dbManagers/carts.js';
 import Products from '../dao/dbManagers/products.js';
+import cartsModel from "../dao/models/carts.js";
 
 const cartsManager = new Carts();
 const productsManager = new Products();
@@ -20,17 +21,18 @@ router.post("/", async (req, res) => {
     }
 });
 
-// Listar los productos de un carrito específico
+// Listar los productos de un carrito especifico
 router.get("/:cid", async (req, res) => {
     try {
         // Obtener el ID del carrito de los params de la ruta
         const cid = req.params.cid; // El ID se recibe como string
 
-        // Obtener el carrito por su ID desde la base de datos
+        // Obtener el carrito por su ID desde la base de datos con populate
         const carrito = await cartsManager.getCartById(cid);
 
-        // Si el carrito existe lo devuelve, si no devuelve un mensaje de error
         if (carrito) {
+            // Populate para poblar los productos relacionados
+            await cartsModel.populate(carrito, { path: 'products.product' });
             res.status(200).send(carrito);
         } else {
             res.status(404).send({ error: "Carrito no encontrado" });
