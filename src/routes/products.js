@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
         // Llamar al método getAll de la clase Products con los "query params"
         const result = await productsManager.getAll(limit, page, query, sort);
 
-        res.send({
+        const response = {
             status: "success",
             payload: result.products,
             totalPages: result.totalPages,
@@ -25,7 +25,17 @@ router.get('/', async (req, res) => {
             page: result.page,
             hasPrevPage: result.hasPrevPage,
             hasNextPage: result.hasNextPage,
-        });
+        };
+
+        // Agregar enlaces directos a la página previa 'precLink' y siguiente 'nextLink'
+        if (result.hasPrevPage) {
+            response.prevLink = `/api/products?page=${result.prevPage}&limit=${limit}&query=${query}&sort=${sort}`;
+        }
+        if (result.hasNextPage) {
+            response.nextLink = `/api/products?page=${result.nextPage}&limit=${limit}&query=${query}&sort=${sort}`;
+        }
+
+        res.send(response);
     } catch (error) {
         res.status(500).send({ status: "error", error: "No se pudieron obtener productos debido a un error interno" });
     }
