@@ -1,12 +1,53 @@
-<div>
-    {{#each products}}
-    <p>{{this.code}}</p>
-    {{/each}}
+<main>
+  <section class="py-5 text-center container">
+    <div>
+      <h1>Products</h1>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nombre</th>
+              <th>Descripción</th>
+              <th>Categoría</th>
+              <th>Precio</th>
+              <th>Stock</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each products}}
+              <tr>
+                <td>{{this.code}}</td>
+                <td>{{this.title}}</td>
+                <td>{{this.description}}</td>
+                <td>{{this.category}}</td>
+                <td>{{this.price}}</td>
+                <td>{{this.stock}}</td>
+                <td>
+                  <form
+                    method="POST"
+                    {{!-- action="/api/carts/:cid/product/{{this._id}}" --}}
+                    action="/api/carts/64f63dd5204b88b11d73293f/product/{{this._id}}"
+                    {{!-- carrito '64f63dd5204b88b11d73293f' hardcodeado --}}
+                  >
+                    <input type="number" name="quantity" value="1" min="1" />
+                    <button type="submit">Agregar al carrito</button>
+                  </form>
+                </td>
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     {{#if hasPrevPage}}
-    <a href="/products?page={{prevPage}}"><button>Anterior</button></a>
+      <a href="/products?page={{prevPage}}"><button>Anterior</button></a>
     {{/if}}
-    
+
     {{#if hasNextPage}}
-    <a href="/products?page={{nextPage}}"><button>Siguiente</button></a>
+      <a href="/products?page={{nextPage}}"><button>Siguiente</button></a>
     {{/if}}
-</div>
+  </section>
+</main>
