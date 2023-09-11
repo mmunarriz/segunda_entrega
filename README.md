@@ -130,6 +130,10 @@ DELETE http://localhost:8080/api/carts/64f63e0e204b88b11d732953
 
 GET http://localhost:8080/products
 
+## Visualizar un carrito especifico (Navegador):
+
+GET http://localhost:8080/carts/64f63dd5204b88b11d73293f
+
 ## Chat (Navegador):
 
 GET http://localhost:8080/
