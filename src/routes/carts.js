@@ -68,11 +68,16 @@ router.post("/:cid/product/:pid", async (req, res) => {
 
         // Agregar un nuevo objeto de producto al arreglo "products" dentro del carrito
         // Verificar si el producto ya existe en el carrito
-        const existingProductInCart = carrito.products.find(prod => prod.product === productId);
+        let existingProductIndex = -1;
+        carrito.products.forEach((productInCart, index) => {
+            if (productInCart.product.toString() === productId) {
+                existingProductIndex = index;
+            }
+        });
 
-        if (existingProductInCart) {
+        if (existingProductIndex !== -1) {
             // Si el producto ya existe, incrementar el campo quantity
-            existingProductInCart.quantity += quantity;
+            carrito.products[existingProductIndex].quantity += quantity;
         } else {
             // Si el producto no existe, agregarlo al carrito
             carrito.products.push({ product: productId, quantity });
