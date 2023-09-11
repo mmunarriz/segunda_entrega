@@ -126,6 +126,10 @@ Eliminar todos los productos de un carrito:
 
 DELETE http://localhost:8080/api/carts/64f63e0e204b88b11d732953
 
+## Ver todos los productos:
+
+GET http://localhost:8080/products
+
 ## Chat:
 
 GET http://localhost:8080/
